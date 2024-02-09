@@ -1,10 +1,11 @@
 <template>
   <div :class="$style.container">
-    Home
+    <WelcomeContainer />
   </div>
 </template>
 
 <script setup lang="ts">
+
   useSeoMeta({ title: 'Главная страница' })
 </script>
 

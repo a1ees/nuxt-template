@@ -1,7 +1,9 @@
 <template>
   <header :class="$style.header">
+    <NuxtLink :to="localePath('/')">
+      <SVGMesto :class="$style.logo" />
+    </NuxtLink>
     <div :class="$style.cw">
-      Header
     </div>
   </header>
 </template>
@@ -10,6 +12,7 @@
   const { Api } = useApi()
   const { theme } = useTheme()
   const { profile, isLoading: isProfileLoading } = useProfile()
+  const localePath = useLocalePath()
 
   async function signOut() {
     // const response = await Api.auth.signOut()

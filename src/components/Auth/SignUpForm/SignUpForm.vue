@@ -1,7 +1,7 @@
 <template>
   <AuthFormWrapper
     @submit="submit"
-    submitTitle="Нажми на меня"
+    submitTitle="Регистрация"
     :submitDisabled="(
       !v$.login.$model
         || !v$.password.$model
@@ -11,14 +11,14 @@
     <UIInputWrapper title="Логин">
       <UIInput
         placeholder="Введите логин"
-        v-model="v$.login.$model"
+        v-model="data.login.value"
       />
     </UIInputWrapper>
     <UIInputWrapper title="Пароль">
       <UIInput
         type="password"
         placeholder="Введите пароль"
-        v-model="v$.password.$model"
+        v-model="data.password.value"
       />
     </UIInputWrapper>
   </AuthFormWrapper>
@@ -27,9 +27,9 @@
 <script setup lang="ts">
   import { useVuelidate } from '@vuelidate/core'
   import { helpers, required } from '@vuelidate/validators'
-  
+
   const { Api } = useApi()
-  
+
   const emit = defineEmits<{
     error: [error: string | null]
   }>()
@@ -37,7 +37,7 @@
   // const { t } = useI18n()
   // const { loadProfile } = useProfile()
   // const localePath = useLocalePath()
-  
+
   const loading = ref(false)
   const error = ref<string | null>(null)
   const data = reactive({
@@ -54,22 +54,24 @@
     }
   }))
   const v$ = useVuelidate(rules, {
-    login: toRef(data.login.value),
-    password: toRef(data.password.value)
+    login: toRef(data.login, 'value'),
+    password: toRef(data.password, 'value')
   })
 
   async function submit() {
-    // restoreErrors()
-    // const { login, password } = data
+    loading.value = true;
 
-    // loading.value = true
-    // const response = await Api.auth.signIn({
-    //   login: login.value,
-    //   password: password.value
-    // })
-    
-    // loading.value = false
-
+    const {login, password} = data;
+    const response = await Api.auth.signUp({
+      email: login.value,
+      password: password.value
+    });
+    if (response) {
+      loading.value = false;
+    }
+    if (!response) {
+      loading.value = false;
+    }
     // if (response?.code) {
     //   switch (response.code) {
     //     case 'INVALID_CREDENTIALS':

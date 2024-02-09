@@ -1,0 +1,41 @@
+
+.content {
+  max-width: 1660px;
+  margin: 200px auto 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 24px;
+
+  .title {
+    color: #FFF;
+    margin-bottom: 80px;
+    text-align: center;
+  }
+
+  .text {
+    max-width: 800px;
+    text-align: center;
+    font-size: 24px;
+    letter-spacing: 1px;
+    margin-bottom: 50px;
+  }
+  .authButtons {
+    display: flex;
+    gap: 10px;
+
+    @media (max-width: 360px) {
+      flex-direction: column;
+      width: 90%;
+    }
+
+    .button {
+      font-size: 18px;
+
+      @media (max-width: 360px) {
+        width: 100%;
+      }
+    }
+  }
+}
+

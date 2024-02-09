@@ -2,9 +2,6 @@
   <footer :class="$style.footer">
     <div :class="$style.cw">
       <div :class="$style.flex">
-        <NuxtLink :to="localePath('/')">
-          LOGO
-        </NuxtLink>
         <div :class="$style.linksWrapper">
           <div
             v-for="linkList in linkLists"
@@ -56,7 +53,7 @@
 
   const { tm } = useI18n()
   const localePath = useLocalePath()
-  
+
   const linkLists = computed<{
     name: string,
     links: ILink[]

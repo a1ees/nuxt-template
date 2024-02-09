@@ -20,4 +20,9 @@ header.header {
     margin: 0 auto;
     gap: 1rem;
   }
+  .logo {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
