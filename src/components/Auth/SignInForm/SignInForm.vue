@@ -1,24 +1,25 @@
 <template>
   <AuthFormWrapper
-    @submit="submit"
-    submitTitle="Авторизация"
-    :submitDisabled="(
+      :submitDisabled="(
       !v$.login.$model
         || !v$.password.$model
         || loading
     )"
+      :submitError="error"
+      submitTitle="Авторизация"
+      @submit="submit"
   >
     <UIInputWrapper title="Логин">
       <UIInput
+          v-model="data.login"
           placeholder="Введите логин"
-          v-model="data.login.value"
       />
     </UIInputWrapper>
     <UIInputWrapper title="Пароль">
       <UIInput
-          type="password"
+          v-model="data.password"
           placeholder="Введите пароль"
-          v-model="data.password.value"
+          type="password"
       />
     </UIInputWrapper>
   </AuthFormWrapper>
@@ -26,70 +27,64 @@
 
 <script lang="ts" setup>
 import {useVuelidate} from '@vuelidate/core'
-import {helpers, required} from '@vuelidate/validators'
+import {required} from '@vuelidate/validators'
+import { watch } from 'vue';
 
-const {Api} = useApi()
+const { Api } = useApi();
 
-const emit = defineEmits<{
-  error: [error: string | null]
-}>()
-
-const { t } = useI18n()
-const { loadProfile } = useProfile()
 const localePath = useLocalePath()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
 const data = reactive({
-  login: {value: "", error: null},
-  password: {value: "", error: null}
+  login: "",
+  password: "",
+});
+
+watch(data, () => {
+  error.value = null
+  loading.value = false;
 })
 
-const rules = computed(() => ({
+const rules = {
   login: {
-    minLength: helpers.withMessage('Обязательное поле', required)
+    required
   },
   password: {
-    minLength: helpers.withMessage('Обязательное поле', required)
+    required
   }
-}))
+};
 const v$ = useVuelidate(rules, {
-  login: toRef(data.login, 'value'),
-  password: toRef(data.password, 'value')
+  login: toRef(data, 'login'),
+  password: toRef(data, 'password')
 })
 
 async function submit() {
-  loading.value = true;
+  try {
+    loading.value = true;
+    const {login, password} = data;
 
-  const {login, password} = data;
-  const response = await Api.auth.signIn({
-    email: login.value,
-    password: password.value
-  });
-  if (response) {
-    loading.value = false;
+    const response = await Api.auth.signIn({
+      email: login,
+      password: password
+    });
+
+    if (Api.auth.isUser(response)) {
+      return navigateTo(localePath('/profile'));
+    }
+
+    if (Api.auth.isAuthErrors(response)) {
+      return error.value = "Неверно введен логин / пароль"
+    }
+    return error.value = "Произошла неизвестная ошибка"
+  } catch (e) {
+
+    error.value = 'Произошла ошибка при попытке авторизации';
+    console.log(e)
+
   }
-  if (!response) {
-    loading.value = false;
-  }
 
-  // if (response?.code) {
-  //   switch (response.code) {
-  //     case 'INVALID_CREDENTIALS':
-  //       const error = getError(AuthErrors.INVALID_CREDENTIALS)
-
-  //       data.login.error = error
-  //       data.password.error = error
-  //       emit('error', `${t('main.error')}. ${error}`)
-  //       break;
-  //   }
-  // }
-
-  // if (response?.token) {
-  //   loadProfile()
-  //   return await navigateTo(localePath('/profile'))
-  // }
 }
 </script>
 
-<style lang="scss" src="./SignInForm.module.scss" module></style>
+<style lang="scss" module src="./SignInForm.module.scss"></style>

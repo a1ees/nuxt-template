@@ -7,88 +7,89 @@
         || !v$.password.$model
         || loading
     )"
+    :submitError="error"
   >
-    <UIInputWrapper title="Логин">
+    <UIInputWrapper title="Почта">
       <UIInput
         placeholder="Введите логин"
-        v-model="data.login.value"
+        v-model="data.login"
       />
     </UIInputWrapper>
     <UIInputWrapper title="Пароль">
       <UIInput
         type="password"
         placeholder="Введите пароль"
-        v-model="data.password.value"
+        v-model="data.password"
       />
     </UIInputWrapper>
+    <ModalSuccessSignUp :visible="visibleModal" @update:visible="toggleModal" :email="email" />
   </AuthFormWrapper>
 </template>
 
-<script setup lang="ts">
-  import { useVuelidate } from '@vuelidate/core'
-  import { helpers, required } from '@vuelidate/validators'
+<script lang="ts" setup>
+import {useVuelidate} from '@vuelidate/core'
+import {helpers, required} from '@vuelidate/validators'
+import { watch } from 'vue';
 
-  const { Api } = useApi()
+const { Api } = useApi();
 
-  const emit = defineEmits<{
-    error: [error: string | null]
-  }>()
+const loading = ref(false)
+const visibleModal = ref(false)
+const error = ref<string | null>(null)
+const email = ref<string | null>(null)
+const data = reactive({
+  login: "",
+  password: "",
+});
 
-  // const { t } = useI18n()
-  // const { loadProfile } = useProfile()
-  // const localePath = useLocalePath()
+watch(data, () => {
+  error.value = null
+  loading.value = false;
+})
 
-  const loading = ref(false)
-  const error = ref<string | null>(null)
-  const data = reactive({
-    login: { value: "", error: null },
-    password: { value: "", error: null }
-  })
-
-  const rules = computed(() => ({
-    login: {
-      minLength: helpers.withMessage('Обязательное поле', required)
-    },
-    password: {
-      minLength: helpers.withMessage('Обязательное поле', required)
-    }
-  }))
-  const v$ = useVuelidate(rules, {
-    login: toRef(data.login, 'value'),
-    password: toRef(data.password, 'value')
-  })
-
-  async function submit() {
-    loading.value = true;
-
-    const {login, password} = data;
-    const response = await Api.auth.signUp({
-      email: login.value,
-      password: password.value
-    });
-    if (response) {
-      loading.value = false;
-    }
-    if (!response) {
-      loading.value = false;
-    }
-    // if (response?.code) {
-    //   switch (response.code) {
-    //     case 'INVALID_CREDENTIALS':
-    //       const error = getError(AuthErrors.INVALID_CREDENTIALS)
-
-    //       data.login.error = error
-    //       data.password.error = error
-    //       emit('error', `${t('main.error')}. ${error}`)
-    //       break;
-    //   }
-    // }
-
-    // if (response?.token) {
-    //   loadProfile()
-    //   return await navigateTo(localePath('/profile'))
-    // }
+const rules = computed(() => ({
+  login: {
+    minLength: helpers.withMessage('Обязательное поле', required)
+  },
+  password: {
+    minLength: helpers.withMessage('Обязательное поле', required)
   }
+}))
+const v$ = useVuelidate(rules, {
+  login: toRef(data, 'login'),
+  password: toRef(data, 'password')
+})
+
+function toggleModal(state: boolean) {
+  visibleModal.value = state
+}
+
+async function submit() {
+  try {
+    loading.value = true;
+    const {login, password} = data;
+
+    const response = await Api.auth.signUp({
+      email: login,
+      password: password
+    });
+
+    if (Api.auth.isUser(response)) {
+      email.value = response.email;
+      return visibleModal.value = true;
+    }
+
+    if (Api.auth.isAuthErrors(response)) {
+      return error.value = "Почта введена некорректно / пользователь уже зарегистрирован"
+    }
+    return error.value = "Произошла неизвестная ошибка"
+  } catch (e) {
+    error.value = 'Произошла ошибка при попытке авторизации';
+  } finally {
+    loading.value = false;
+  }
+
+}
 </script>
 
 <style lang="scss" src="./SignUpForm.module.scss" module></style>

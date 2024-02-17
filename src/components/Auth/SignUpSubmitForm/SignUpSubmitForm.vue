@@ -17,7 +17,7 @@
   import { helpers, required } from '@vuelidate/validators'
 
   const { Api } = useApi()
-  
+
   const emit = defineEmits<{
     error: [error: string | null]
   }>()
@@ -25,7 +25,7 @@
   // const { t } = useI18n()
   // const { loadProfile } = useProfile()
   // const localePath = useLocalePath()
-  
+
   const loading = ref(false)
   const error = ref<string | null>(null)
   const data = reactive({
@@ -55,7 +55,7 @@
     //   login: login.value,
     //   password: password.value
     // })
-    
+
     // loading.value = false
 
     // if (response?.code) {

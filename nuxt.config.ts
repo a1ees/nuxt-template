@@ -36,7 +36,7 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    '@nuxtjs/i18n'
+    '@nuxtjs/i18n',
   ],
   plugins: [
     '~/plugins/maska.ts'

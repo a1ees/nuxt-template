@@ -16,7 +16,7 @@
       :type="type === 'password'
         ? (isHidden ? type : 'text')
         : type || 'text'"
-      :placeholder="placeholder || 'Placeholder'"
+      :placeholder="placeholder || ''"
 
       v-maska
       v-model="model"
@@ -48,7 +48,7 @@
     fill?: boolean
     wrong?: boolean
     copied?: boolean
-    
+
     dataMask?: string
     dataMaskaTokens?: string
     dataMaskaEager?: boolean
@@ -62,7 +62,7 @@
   const model = defineModel()
   const emit = defineEmits<{ buttonClick: []; copy: [text: string] }>()
   const props = defineProps<Props>()
-  
+
   const isPassword = computed(() => props?.type === 'password')
   const isHidden = ref(true)
   const inputTheme = computed(() => (

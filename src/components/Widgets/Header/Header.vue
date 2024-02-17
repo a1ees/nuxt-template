@@ -1,26 +1,38 @@
 <template>
   <header :class="$style.header">
-    <NuxtLink :to="localePath('/')">
-      <SVGMesto :class="$style.logo" />
-    </NuxtLink>
-    <div :class="$style.cw">
+    <div :class="$style.content">
+      <NuxtLink :to="localePath('/')">
+        <SVGMesto :class="$style.logo"/>
+      </NuxtLink>
+      <div v-if="profile && !isLoading" :class="$style.cw">
+        <p :class="$style.email">{{ profile.email }}</p>
+        <button :class="$style.button" @click="signOut">Выйти</button>
+      </div>
+      <UILoader v-if="isPathProfile" :is-loading="isLoading"/>
     </div>
   </header>
 </template>
 
-<script setup lang="ts">
-  const { Api } = useApi()
-  const { theme } = useTheme()
-  const { profile, isLoading: isProfileLoading } = useProfile()
-  const localePath = useLocalePath()
+<script lang="ts" setup>
 
-  async function signOut() {
-    // const response = await Api.auth.signOut()
+const { Api } = useApi();
+const route = useRoute();
+const { profile, isLoading } = useProfile({prefetch: true});
+const localePath = useLocalePath();
 
-    // if (response) {
-    //   await navigateTo(localePath('/'), { external: true })
-    // }
+const isPathProfile = computed(() => route.path === '/profile');
+
+async function signOut() {
+  try {
+    const response = await Api.auth.signOut();
+    if (response) {
+      profile.value = null;
+      navigateTo(localePath('/'));
+    }
+  } catch (error) {
+    console.error('Error sign out:', error);
   }
+}
 </script>
 
-<style lang="scss" src="./Header.module.scss" module></style>
+<style lang="scss" module src="./Header.module.scss"></style>

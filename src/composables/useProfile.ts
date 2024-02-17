@@ -6,7 +6,7 @@ type UseProfileOptions = {
 }
 
 /**
- * 
+ *
  * Используй options.prefetch чтобы актуализировать данные
  */
 export function useProfile(options?: UseProfileOptions) {
@@ -18,6 +18,7 @@ export function useProfile(options?: UseProfileOptions) {
     isLoading: false
   }))
 
+
   async function loadProfile() {
     try {
       state.value.isLoading = true
@@ -28,14 +29,13 @@ export function useProfile(options?: UseProfileOptions) {
       state.value.isLoading = false
     }
   }
-  
+
   if (options?.prefetch || !state.value.profile) {
     loadProfile()
   }
 
   return {
-    profile: toRef(state.value.profile),
-    isLoading: toRef(state.value.isLoading),
+    ...toRefs(state.value),
     loadProfile
   }
 }

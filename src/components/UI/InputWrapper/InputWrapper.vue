@@ -27,7 +27,7 @@
   const props = defineProps<{
     title?: string
     additional?: string
-    error?: string | null
+    error?: string | Ref<string> | null
     description?: string | null
     link?: {
       href: string

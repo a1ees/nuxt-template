@@ -5,7 +5,7 @@ footer.footer {
   background: #181818;
 
   .cw {
-    max-width: 1660px;
+    max-width: 880px;
     margin: 0 auto;
     padding: 4rem $contentPaddingX;
     box-sizing: content-box;
@@ -33,7 +33,7 @@ footer.footer {
     .links {
       display: flex;
       flex-direction: column;
-      
+
       .title {
         font-family: 'Akrobat', sans-serif;
         font-size: 2rem;
@@ -42,13 +42,13 @@ footer.footer {
         letter-spacing: -0.05rem;
         text-transform: uppercase;
       }
-  
+
       .list {
         display: flex;
         flex-direction: column;
         margin-top: 2rem;
         gap: 1.75rem;
-  
+
         .link {
           color: #555;
           font-size: 1.25rem;
@@ -70,7 +70,7 @@ footer.footer {
     justify-content: space-between;
     margin-top: 4.5rem;
     gap: 2rem;
-    
+
     .copyright {
       color: #555;
       font-size: 1.25rem;
@@ -101,7 +101,7 @@ footer.footer {
           [fill]:not([fill~=none]) {
             fill: #fff;
           }
-  
+
           [stroke]:not([stroke~=none]) {
             stroke: #fff;
           }
@@ -122,11 +122,11 @@ footer.footer {
       .button {
         display: none;
       }
-  
+
       .linksWrapper {
         margin-top: 2.25rem;
         gap: 3rem;
-  
+
         .links {
           .list {
             margin-top: 2.25rem;

@@ -1,8 +1,8 @@
 <template>
   <form
-    id="form"
-    @submit.prevent="submit"
-    :class="[$style.form, $style[theme]]"
+      id="form"
+      :class="[$style.form, $style[theme]]"
+      @submit.prevent="submit"
   >
     <div v-if="description" :class="$style.description">
       {{ description }}
@@ -11,58 +11,66 @@
       <slot></slot>
     </div>
     <div
-      v-if="cancelTitle || submitTitle"
-      :class="$style.buttons"
+        v-if="cancelTitle || submitTitle"
+        :class="$style.buttons"
     >
       <UIButton
-        fill
-        uppercase
-        v-if="cancelTitle"
-        @click.stop.prevent="cancel"
-        type="stroked"
+          v-if="cancelTitle"
+          fill
+          type="stroked"
+          uppercase
+          @click.stop.prevent="cancel"
       >
         {{ cancelTitle }}
       </UIButton>
       <UIButton
-        fill
-        uppercase
-        v-if="submitTitle"
-        :disabled="!!(legalTitle && !legal) || submitDisabled"
-        style="white-space: nowrap"
-        type="black"
+          v-if="submitTitle"
+          :disabled="!!(legalTitle && !legal) || submitDisabled"
+          fill
+          style="white-space: nowrap"
+          type="black"
+          uppercase
       >
         {{ submitTitle }}
       </UIButton>
     </div>
+    <span
+        :class="$style.error"
+        v-if="submitError"
+    >
+      {{ submitError }}
+    </span>
   </form>
 </template>
 
-<script setup lang="ts">
-  const emit = defineEmits<{ submit: [], cancel: [] }>()
-  const props = defineProps<{
-    cancelTitle?: string
-    submitTitle?: string
-    submitDisabled?: boolean
-    description?: string
-    legalTitle?: string
-  }>()
+<script lang="ts" setup>
+const emit = defineEmits<{ submit: [], cancel: [] }>()
+const props = defineProps<{
+  cancelTitle?: string
+  submitTitle?: string
+  submitDisabled?: boolean
+  description?: string
+  legalTitle?: string
+  submitError?: string | null
+}>()
 
-  const legal = ref(false)
-  function changeLegal(checked: boolean) {
-    legal.value = checked
-  }
+const legal = ref(false)
 
-  const { theme } = useTheme()
+function changeLegal(checked: boolean) {
+  legal.value = checked
+}
 
-  function cancel() {
-    emit('cancel')
-  }
+const {theme} = useTheme()
 
-  function submit() {
-    if (props?.legalTitle && !legal.value) return
-    
-    emit('submit')
-  }
+function cancel() {
+  emit('cancel')
+}
+
+function submit() {
+  if (props?.legalTitle && !legal.value) return
+
+  emit('submit')
+}
 </script>
 
-<style lang="scss" src="./FormWrapper.module.scss" module></style>
+<style lang="scss" module src="./FormWrapper.module.scss"></style>

@@ -6,9 +6,10 @@ export const request = async <T = any>(
 ): Promise<T | null> => {
   const baseURL = useApiBaseURL()
   const options = opts || {}
-  const token = useCookie('token')
+  const token = useCookie('jwt')
 
   options.baseURL = baseURL
+  options.credentials = 'include'
   options.ignoreResponseError = true
   options.headers = options.headers || {}
   options.headers = {

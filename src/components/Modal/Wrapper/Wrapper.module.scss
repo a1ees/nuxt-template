@@ -1,0 +1,97 @@
+.popup {
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  color: #000;
+  z-index: 10;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+
+  .container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    box-sizing: border-box;
+    max-width: 430px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #121212;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    cursor: auto;
+
+    @media (max-width: 530px) {
+        max-width: 282px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 22px;
+      margin-bottom: 50px;
+      color: #fff;
+    }
+
+    .closeButton {
+      width: 32px;
+      height: 32px;
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      transition: opacity 0.6s;
+      border: none;
+      padding: 0;
+      background-size: cover;
+
+      @media (max-width: 530px) {
+        width: 20px;
+        height: 20px;
+        right: 0;
+      }
+
+      &:hover {
+        opacity: 0.6;
+        cursor: pointer;
+      }
+    }
+    .form {
+      display: flex;
+      flex-direction: column;
+
+      .submitButton {
+        font-size: 18px;
+        line-height: 22px;
+        color: #fff;
+        background-color: #000;
+        border: none;
+        border-radius: 2px;
+        transition: opacity 0.6s;
+        padding: 14px 0;
+        &:hover {
+          cursor: pointer;
+          opacity: 0.8;
+        }
+        @media (max-width: 320px) {
+          font-size: 14px;
+          line-height: 17px;
+        }
+      }
+      .disabledButton {
+        background-color: #121212;
+        color: #4b4b4b;
+        border: 1px solid #4b4b4b;
+
+        &:hover {
+          cursor: default;
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

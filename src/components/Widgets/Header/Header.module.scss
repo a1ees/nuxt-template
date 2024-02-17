@@ -1,28 +1,56 @@
 header.header {
   z-index: 1;
   position: fixed;
-  display: flex;
-  align-items: center;
-  height: 70px;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 0 $contentPaddingX;
   user-select: none;
   background: #181818;
 
-  .cw {
+  .content {
+    max-width: 880px;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    max-width: $cw;
+    height: 70px;
     margin: 0 auto;
-    gap: 1rem;
-  }
-  .logo {
-    &:hover {
-      cursor: pointer;
+    padding: 0px 10px;
+    box-sizing: border-box;
+    .cw {
+      display: flex;
+      align-items: center;
+      max-width: $cw;
+      gap: 2rem;
+
+      @media (max-width: 400px) {
+        flex-direction: column;
+        gap: 1px;
+      }
+
+      .email {
+
+      }
+
+      .button {
+        cursor: pointer;
+        border: 0;
+        background: none;
+        font-size: 16px;
+        color: #555555;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #6C6C7A;
+        }
+      }
+
+    }
+
+    .logo {
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 }
