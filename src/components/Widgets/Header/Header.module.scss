@@ -29,7 +29,9 @@ header.header {
       }
 
       .email {
-
+        &:hover {
+          cursor: pointer;
+        }
       }
 
       .button {

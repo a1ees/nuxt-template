@@ -1,12 +1,12 @@
 <template>
-  <ModalWrapper
+  <ProfileModalWrapper
       :button-disabled="v$.place.$error || v$.link.$error || v$.$invalid"
       :class="$style.wrapper"
       :text-button="'Сохранить'"
       :title="'Новое место'"
       :visible="visible"
-      @update:visible="closeModal"
-      @submit-form="submit"
+      @close="closeModal"
+      @submit="submit"
   >
     <UIInputWrapper :class="$style.label" :error="placeErrorMessage">
       <UIInput
@@ -22,7 +22,7 @@
           placeholder="Ссылка на картинку"
       />
     </UIInputWrapper>
-  </ModalWrapper>
+  </ProfileModalWrapper>
 </template>
 
 <script lang="ts" setup>
@@ -33,7 +33,7 @@ import {Api} from "@/api";
 const props = defineProps<{
   visible?: boolean
 }>()
-const emit = defineEmits(['update:visible', 'submit'])
+const emit = defineEmits<{ close: [], submit: [] }>()
 
 const cardData = reactive({
   place: '',
@@ -41,7 +41,7 @@ const cardData = reactive({
 });
 
 function closeModal() {
-  emit('update:visible')
+  emit('close')
   cardData.place = ''
   cardData.link = ''
   v$.value.$reset()
@@ -75,7 +75,7 @@ const linkErrorMessage = computed(() => {
 
 async function submit() {
   try {
-    const newCard = await Api.cards.createCard(cardData.place, cardData.link)
+    const newCard = await Api.cards.create(cardData.place, cardData.link)
 
     if (newCard) {
       emit('submit')

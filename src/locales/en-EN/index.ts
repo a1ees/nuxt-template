@@ -1,5 +1,13 @@
 export default {
   helloWorld: 'Hello world',
+  welcome: {
+    title: 'Mesto Project',
+    description: 'This project was developed as part of the training on the Yandex.Practicum platform. This web application allows users to upload pictures with captions and interact with them',
+    buttons: {
+      signIn: 'Sign In',
+      signUp: 'Sign Up',
+    }
+  },
   footer: {
     linkLists: [
       {

@@ -2,68 +2,61 @@
   <ProfileWrapper v-slot:userInfo>
     <section :class="$style.profile">
       <UIProfileAvatar
-          :avatar-url="userProfile?.avatar"
-          @click="toggleEditAvatar"
+          :avatar-url="profile?.avatar"
+          @click="showEditAvatar = !showEditAvatar"
       />
       <div :class="$style.info">
-        <h1 :class="$style.name">{{ userProfile?.name }}</h1>
+        <h1 :class="$style.name">{{ profile?.name }}</h1>
         <SVGEditProfile
             :class="$style.profileEdit"
-            @click="toggleEditProfile"
+            @click="showEditProfile = !showEditProfile"
         />
-        <p :class="$style.profession">{{ userProfile?.about }}</p>
+        <p :class="$style.profession">{{ profile?.about }}</p>
       </div>
-      <SVGAddCardButton :class="$style.addCard" @click="toggleCreateCard"/>
+      <SVGAddCardButton :class="$style.addCard" @click="showCreateCard = !showCreateCard"/>
     </section>
-    <ModalEditProfile
-        :visible="isVisibleEditProfile"
+    <ProfileModalEdit
+        :visible="showEditProfile"
         @submit="updateProfileData"
-        @update:visible="toggleEditProfile"
+        @close="showEditProfile = !showEditProfile"
     />
-    <ModalEditAvatar
-        :visible="isVisibleEditAvatar"
+    <ProfileModalEditAvatar
+        :visible="showEditAvatar"
         @submit="updateProfileData"
-        @update:visible="toggleEditAvatar"
+        @close="showEditAvatar = !showEditAvatar"
     />
-    <ModalCreateCard
-        :visible="isVisibleCreateCard"
+    <ProfileModalCreateCard
+        :visible="showCreateCard"
         @submit="updateCards"
-        @update:visible="toggleCreateCard"
+        @close="showCreateCard = !showCreateCard"
     />
   </ProfileWrapper>
 </template>
 
 <script lang="ts" setup>
-import type {User} from "@/ts";
+
 import {Api} from "@/api";
-import Image from "@/components/Modal/Image/Image.vue";
 
-const userProfile = ref<User | null>(null);
+const { profile, loadProfile } = useProfile()
 
-const isVisibleEditProfile = ref<boolean>(false);
-const isVisibleEditAvatar = ref<boolean>(false);
-const isVisibleCreateCard = ref<boolean>(false);
+const showEditProfile = ref<boolean>(false);
+const showEditAvatar = ref<boolean>(false);
+const showCreateCard = ref<boolean>(false);
 
-const { getCards } = useCards();
+const { refresh } = useAsyncData('cards', async () => (
+    await Api.cards.getAll()
+))
 
-function toggleEditProfile() {
-  isVisibleEditProfile.value = !isVisibleEditProfile.value
-}
-
-function toggleEditAvatar() {
-  isVisibleEditAvatar.value = !isVisibleEditAvatar.value
-}
-
-function toggleCreateCard() {
-  isVisibleCreateCard.value = !isVisibleCreateCard.value
-}
+const handleRefreshCard = () => {
+  refresh();
+};
 
 async function updateProfileData() {
-  userProfile.value = await Api.profile.getProfile();
+  await loadProfile()
 }
 
 async function updateCards() {
-  await getCards()
+  handleRefreshCard()
 }
 
 onMounted(async () => {

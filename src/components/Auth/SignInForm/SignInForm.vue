@@ -64,26 +64,25 @@ async function submit() {
     loading.value = true;
     const {login, password} = data;
 
-    const response = await Api.auth.signIn({
+    const isSignIn = await Api.auth.signIn({
       email: login,
       password: password
     });
 
-    if (Api.auth.isUser(response)) {
+    if (isSignIn.success) {
       return navigateTo(localePath('/profile'));
     }
 
-    if (Api.auth.isAuthErrors(response)) {
-      return error.value = "Неверно введен логин / пароль"
+    if (isSignIn.authError) {
+      return error.value = isSignIn.authError
     }
-    return error.value = "Произошла неизвестная ошибка"
+
+    return error.value = "Произошла неизвестная ошибка";
+
   } catch (e) {
-
     error.value = 'Произошла ошибка при попытке авторизации';
-    console.log(e)
-
+    console.log(e);
   }
-
 }
 </script>
 

@@ -31,11 +31,11 @@ const props = defineProps<{
   email?: string | null
 }>()
 
-const emit = defineEmits(['update:visible']);
+const emit = defineEmits<{ close: [], submit: [] }>()
 
 function changeVisible(e: MouseEvent) {
   if (e.target === e.currentTarget) {
-    emit('update:visible', false);
+    emit('close');
   }
 }
 

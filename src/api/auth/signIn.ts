@@ -1,22 +1,27 @@
-import type {User} from '@/ts'
-import type {AuthErrors} from '@/ts'
+import type {AuthErrors, User} from '@/ts'
+import {isAuthErrors, isUser} from "@/common/funcs/auth";
 
-export async function signIn(signIdData: object) {
-    const request = useRequest()
-    const response = await request<User | AuthErrors>(
-        'http://localhost:3002/signin',
-        {
-            method: 'POST',
-            body: JSON.stringify(signIdData)
-        })
-    return response ? response : null
-}
+export async function signIn(signInData: object): Promise<{ success: boolean, authError: string }> {
+    const request = useRequest();
+    let result = {success: false, authError: ''};
+    try {
+        const response = await request<User | AuthErrors>(
+            'http://localhost:3002/signin',
+            {
+                method: 'POST',
+                body: JSON.stringify(signInData)
+            }
+        );
 
-export function isUser(response: any): response is User {
-    return response && typeof response === 'object' && '_id' in response;
-}
+        if (isUser(response)) {
+            result.success = true;
+        }
+        if (isAuthErrors(response)) {
+            result.authError = "Неверно введен логин / пароль";
+        }
 
-export function isAuthErrors(response: any): response is AuthErrors {
-    console.log('1')
-    return response && typeof response === 'object' && 'error' || 'message' in response;
+    } catch (e) {
+        console.log(e);
+    }
+    return result;
 }

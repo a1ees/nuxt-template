@@ -5,7 +5,12 @@
         <SVGMesto :class="$style.logo"/>
       </NuxtLink>
       <div v-if="profile && !isLoading" :class="$style.cw">
-        <p :class="$style.email">{{ profile.email }}</p>
+        <p
+            :class="$style.email"
+            @click="navigateTo(localePath('/profile'))"
+        >
+          {{ profile.email }}
+        </p>
         <button :class="$style.button" @click="signOut">Выйти</button>
       </div>
       <UILoader v-if="isPathProfile" :is-loading="isLoading"/>

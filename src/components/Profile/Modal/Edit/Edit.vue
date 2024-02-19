@@ -1,12 +1,12 @@
 <template>
-  <ModalWrapper
+  <ProfileModalWrapper
       :button-disabled="v$.name.$error || v$.profession.$error || v$.$invalid"
       :class="$style.wrapper"
       :text-button="'Сохранить'"
       :title="'Редактировать профиль'"
       :visible="visible"
-      @update:visible="closeModal"
-      @submit-form="submit"
+      @close="closeModal"
+      @submit="submit"
   >
     <UIInputWrapper :class="$style.label" :error="nameErrorMessage">
       <UIInput
@@ -20,7 +20,7 @@
           @input="v$.profession.$touch()"
       />
     </UIInputWrapper>
-  </ModalWrapper>
+  </ProfileModalWrapper>
 </template>
 
 <script lang="ts" setup>
@@ -31,7 +31,7 @@ import {Api} from "@/api";
 const props = defineProps<{
   visible?: boolean
 }>()
-const emit = defineEmits(['update:visible', 'submit'])
+const emit = defineEmits<{ close: [], submit: [] }>()
 
 const profileData = reactive({
   name: '',
@@ -39,7 +39,7 @@ const profileData = reactive({
 });
 
 function closeModal() {
-  emit('update:visible')
+  emit('close')
 }
 
 const rules = computed(() => ({
@@ -105,4 +105,4 @@ watch(
 );
 </script>
 
-<style lang="scss" module src="./EditProfile.module.scss"></style>
+<style lang="scss" module src="./Edit.module.scss"></style>

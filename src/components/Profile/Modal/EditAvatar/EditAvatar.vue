@@ -1,12 +1,12 @@
 <template>
-  <ModalWrapper
+  <ProfileModalWrapper
       :button-disabled="v$.avatar.$error || v$.$invalid"
       :class="$style.wrapper"
       :text-button="'Да'"
       :title="'Обновить аватар'"
       :visible="visible"
-      @update:visible="closeModal"
-      @submit-form="submit"
+      @close="closeModal"
+      @submit="submit"
   >
     <UIInputWrapper :class="$style.label" :error="avatarErrorMessage">
       <UIInput
@@ -14,7 +14,7 @@
           @input="v$.avatar.$touch()"
       />
     </UIInputWrapper>
-  </ModalWrapper>
+  </ProfileModalWrapper>
 </template>
 
 <script lang="ts" setup>
@@ -28,7 +28,7 @@ const props = defineProps<{
 
 const avatar = ref<string>('');
 
-const emit = defineEmits(['update:visible', 'submit'])
+const emit = defineEmits<{ close: [], submit: [] }>()
 
 const rules = {
   avatar: {
@@ -58,7 +58,7 @@ async function submit() {
 }
 
 function closeModal() {
-  emit('update:visible', false);
+  emit('close');
   avatar.value = '';
   v$.value.$reset()
 }

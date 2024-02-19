@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>
-  <ModalImage :visible="isVisibleImage" :link="image" :title="title" @close="isVisibleImage = false" />
+  <ProfileModalImage :visible="isVisibleImage" :link="image" :title="title" @close="isVisibleImage = false" />
 </template>
 
 <script lang="ts" setup>
@@ -30,7 +30,13 @@ const props = defineProps<{
 
 }>()
 
-const {getCards} = useCards()
+const { refresh } = useAsyncData('cards', async () => (
+    await Api.cards.getAll()
+))
+
+const handleRefreshCard = () => {
+  refresh();
+};
 const {profile} = useProfile();
 
 const isVisibleImage = ref<boolean>(false);
@@ -40,8 +46,8 @@ const isLiked = computed(() => props.likesArr.some(i => i === profile.value?._id
 
 async function deleteCard(cardId: string) {
   try {
-    await Api.cards.deleteCard(cardId)
-    await getCards()
+    await Api.cards.deleteById(cardId)
+    handleRefreshCard()
   } catch (e) {
     console.log(e)
   }
@@ -49,8 +55,8 @@ async function deleteCard(cardId: string) {
 
 async function toggleLike(cardId: string, isLiked: boolean) {
   try {
-    await Api.cards.likeCard(cardId, isLiked)
-    await getCards()
+    await Api.cards.likeById(cardId, isLiked)
+    handleRefreshCard()
   } catch (e) {
     console.error(e)
   }
@@ -58,4 +64,4 @@ async function toggleLike(cardId: string, isLiked: boolean) {
 
 </script>
 
-<style lang="scss" module src="./CardTemplate.scss"></style>
+<style lang="scss" module src="./Card.scss"></style>

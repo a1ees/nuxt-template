@@ -1,7 +1,7 @@
 <template>
   <ProfileWrapper v-slot:cards>
     <div :class="$style.container">
-      <ProfileCardTemplate
+      <ProfileCard
           v-for="card in cards"
           :key="card._id"
           :owner="card.owner"
@@ -17,11 +17,12 @@
 
 <script lang="ts" setup>
 
-const { cards, getCards } = useCards();
+import {Api} from "@/api";
 
-onMounted(async () => {
-  await getCards()
-});
+const { data: cards } = useAsyncData('cards', async () => (
+    await Api.cards.getAll()
+))
+
 </script>
 
 <style lang="scss" module src="./Cards.module.scss"></style>

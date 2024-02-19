@@ -4,7 +4,7 @@
       <div :class="$style.container" @click.stop>
         <SVGCloseModal :class="$style.closeButton" @click="closeModal"/>
         <h2 :class="$style.title">{{ title }}</h2>
-        <form :class="$style.form" @submit.prevent="emit('submit-form')">
+        <form :class="$style.form" @submit.prevent="emit('submit')">
           <slot></slot>
           <button
               :class="[$style.submitButton, { [$style.disabledButton]: buttonDisabled }]"
@@ -28,10 +28,10 @@ const props = defineProps<{
   visible?: boolean;
 }>()
 
-const emit = defineEmits(['update:visible', 'submit-form'])
+const emit = defineEmits<{ close: [], submit: [] }>()
 
 function closeModal() {
-  emit('update:visible', false)
+  emit('close')
 }
 </script>
 

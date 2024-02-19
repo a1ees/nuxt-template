@@ -22,7 +22,11 @@
         v-model="data.password"
       />
     </UIInputWrapper>
-    <ModalSuccessSignUp :visible="visibleModal" @update:visible="toggleModal" :email="email" />
+    <ProfileModalSuccessSignUp
+        :visible="visibleModal"
+        @close="visibleModal = !visibleModal"
+        :email="email"
+    />
   </AuthFormWrapper>
 </template>
 
@@ -30,6 +34,7 @@
 import {useVuelidate} from '@vuelidate/core'
 import {helpers, required} from '@vuelidate/validators'
 import { watch } from 'vue';
+import {isAuthErrors, isUser} from "@/common/funcs/auth";
 
 const { Api } = useApi();
 
@@ -60,29 +65,27 @@ const v$ = useVuelidate(rules, {
   password: toRef(data, 'password')
 })
 
-function toggleModal(state: boolean) {
-  visibleModal.value = state
-}
-
 async function submit() {
   try {
     loading.value = true;
     const {login, password} = data;
 
-    const response = await Api.auth.signUp({
+    const isSignUp = await Api.auth.signUp({
       email: login,
       password: password
     });
 
-    if (Api.auth.isUser(response)) {
-      email.value = response.email;
+    if (isSignUp.success) {
+      email.value = isSignUp.success
       return visibleModal.value = true;
     }
 
-    if (Api.auth.isAuthErrors(response)) {
-      return error.value = "Почта введена некорректно / пользователь уже зарегистрирован"
+    if (isSignUp.authError) {
+      return error.value = isSignUp.authError
     }
+
     return error.value = "Произошла неизвестная ошибка"
+
   } catch (e) {
     error.value = 'Произошла ошибка при попытке авторизации';
   } finally {
